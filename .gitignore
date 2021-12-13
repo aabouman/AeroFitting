@@ -23,5 +23,5 @@ docs/site/
 # environment.
 Manifest.toml
 
-pdf/
-processed_data/
+pdf/*
+processed_data/*
