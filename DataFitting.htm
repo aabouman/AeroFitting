@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+        "HTMLFiles/xhtml-math11-f.dtd">
+
+<!-- Created with the Wolfram Language for Students - Personal Use Only : www.wolfram.com -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>
+  DataFitting (the Wolfram Language for Students - Personal Use Only : www.wolfram.com)
+ </title>
+ <link href="HTMLFiles/DataFitting.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body style="font-size: Floor[125. Inherited]%;">
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_1.png" alt="DataFitting_1.png" width="168" height="21" style="vertical-align:middle" />
+</p>
+
+<p class="Chapter">
+ Training 
+</p>
+
+
+
+<p class="Section">
+ Modeling Input/Aero Forces
+</p>
+
+
+
+<p class="Text">
+ We want to model the the force from each motor/rotor <span><em>i</em></span>, <span><span><img src="HTMLFiles/DataFitting_2.png" alt="DataFitting_2.png" width="13" height="24" style="vertical-align:middle" /></span></span>.
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_3.gif" alt="DataFitting_3.gif" width="221" height="126" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ The first method we use to do this is the modeling each each 
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_4.gif" alt="DataFitting_4.gif" width="159" height="53" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Here <span><span>&Omega;</span></span> is the rotor velocity of each motor and <span style='text-align: center;'><span><img src="HTMLFiles/DataFitting_5.png" alt="DataFitting_5.png" width="20" height="24" style="vertical-align:middle" /></span></span> and <span style='text-align: center;'><span><img src="HTMLFiles/DataFitting_6.png" alt="DataFitting_6.png" width="20" height="24" style="vertical-align:middle" /></span></span> are the body linear and rotational velocities.<br />Modeling this as a second order polynomial, we can write <span><span><img src="HTMLFiles/DataFitting_7.png" alt="DataFitting_7.png" width="18" height="24" style="vertical-align:middle" /></span></span> using Einstein tensor notation as:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_8.png" alt="DataFitting_8.png" width="351" height="60" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Here <span><em>A</em></span> is a column vector (bias term), <span><em>B</em></span> is a matrix (linear term), <span><em>C</em></span> is a 3rd order tensor (quadratic term). Inorder to use linear algebra tools we can reorder this into a matrix problem as follows:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_9.gif" alt="DataFitting_9.gif" width="448" height="132" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Where &#62426; denotes the Kronecker product and <span><span>{x}</span></span>is the dimension of the vector <span><em>x</em></span>. 
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_10.gif" alt="DataFitting_10.gif" width="615" height="128" style="vertical-align:middle" />
+</p>
+
+<p class="Section">
+ Modeling Input/Aero Moments
+</p>
+
+
+
+<p class="Text">
+ Starting from Euler&rsquo;s equation:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_11.gif" alt="DataFitting_11.gif" width="200" height="52" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Again modeling it as a quadratic of <span><em>x</em></span>. However this time it is important to use <span style='text-align: center;'><span><img src="HTMLFiles/DataFitting_12.png" alt="DataFitting_12.png" width="11" height="24" style="vertical-align:middle" /></span></span>, to capture conservation of angular momentum&rsquo;s impact on body torque
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_13.gif" alt="DataFitting_13.gif" width="188" height="54" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ We can again express this as a matrix problem as follows:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_14.gif" alt="DataFitting_14.gif" width="448" height="205" style="vertical-align:middle" />
+</p>
+
+<p class="Section">
+ Fitting Model
+</p>
+
+
+
+<p class="Subsection">
+ Importing Data
+</p>
+
+
+
+<p class="Text">
+ Loading the segments comprising one full flight and concatenating
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_15.png" alt="DataFitting_15.png" width="1107" height="490" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Plotting this data of quad rotors position through time
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_16.gif" alt="DataFitting_16.gif" width="450" height="366" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_17.gif" alt="DataFitting_17.gif" width="450" height="348" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_18.gif" alt="DataFitting_18.gif" width="450" height="369" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Text">
+ The first flight is a aggressive linear oscillation, the second flight is a wobbly circle, and the third flight is a aggressive 3d circle. The flights cover different regimes of motion/actuation. The first trajectory in particular forces the quad through its own prop wash.
+</p>
+
+
+
+<p class="Subsection">
+ Extracting Data
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_19.gif" alt="DataFitting_19.gif" width="891" height="230" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Converting set of quaternions to a set of Rotation matrices
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_20.png" alt="DataFitting_20.png" width="739" height="94" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Force Model 
+</p>
+
+
+
+<p class="Subsubsection">
+ Examining The Data
+</p>
+
+
+
+<p class="Text">
+ Plotting the body&rsquo;s position and acceleration over the two flights.
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_21.gif" alt="DataFitting_21.gif" width="514" height="289" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_22.gif" alt="DataFitting_22.gif" width="514" height="280" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Text">
+ From this we see that when the quad rotors body is stationary the recorded acceleration of the body is <span><span><img src="HTMLFiles/DataFitting_23.png" alt="DataFitting_23.png" width="78" height="27" style="vertical-align:middle" /></span></span>. Thus we note that the data labeled &ldquo;acceleration body x&rdquo;, &ldquo;acceleration body y&rdquo;, &ldquo;acceleration body z&rdquo; is actually a filtered fusion <span>Vicon</span>/IMU measurement. Thus we can modify our force fitting function:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_24.png" alt="DataFitting_24.png" width="184" height="28" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Removing Coriolis from acceleration each time step:
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_25.gif" alt="DataFitting_25.gif" width="394" height="48" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Here <span><span><img src="HTMLFiles/DataFitting_26.png" alt="DataFitting_26.png" width="10" height="24" style="vertical-align:middle" /></span></span> is the net forces applied on the quad rotor by the quad rotor as well as the aerodynamic forces on the quad rotor.
+</p>
+
+
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_27.gif" alt="DataFitting_27.gif" width="514" height="280" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Here we plot the motor speeds
+</p>
+
+
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_28.gif" alt="DataFitting_28.gif" width="562" height="277" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Fitting Force
+</p>
+
+
+
+<p class="Text">
+ As above we assume the forces on the quad rotor are a function of only the body linear and angular velocity, as well as the motor speeds. 
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_29.gif" alt="DataFitting_29.gif" width="153" height="52" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ We are then going to be fitting <span><span><img src="HTMLFiles/DataFitting_30.png" alt="DataFitting_30.png" width="20" height="44" style="vertical-align:middle" /></span></span>
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_31.png" alt="DataFitting_31.png" width="184" height="28" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ As&nbsp;&nbsp;<span><span><img src="HTMLFiles/DataFitting_32.png" alt="DataFitting_32.png" width="18" height="24" style="vertical-align:middle" /></span></span> is modeled as a quadratic we must apply the transform <span><span><img src="HTMLFiles/DataFitting_33.png" alt="DataFitting_33.png" width="134" height="72" style="vertical-align:middle" /></span></span>. Constructing the set of sample points. 
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_34.gif" alt="DataFitting_34.gif" width="639" height="178" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Finally we can now compute the matrix <span class="doublestruck">D</span>, <span class="doublestruck">E</span>
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_35.gif" alt="DataFitting_35.gif" width="436" height="100" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Measuring Goodness of Fit 
+</p>
+
+
+
+<p class="Text">
+ We can then evaluate the performance of this model using
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_36.gif" alt="DataFitting_36.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_37.gif" alt="DataFitting_37.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_38.gif" alt="DataFitting_38.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Text">
+ Checking the goodness of fit using the coefficient of determination:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_39.gif" alt="DataFitting_39.gif" width="216" height="115" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ We compute the <span><span><img src="HTMLFiles/DataFitting_40.png" alt="DataFitting_40.png" width="18" height="24" style="vertical-align:middle" /></span></span> coefficient then:
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_41.png" alt="DataFitting_41.png" width="398" height="154" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_42.png" alt="DataFitting_42.png" width="78" height="21" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Saving the quadratic least squares matrix:
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_43.gif" alt="DataFitting_43.gif" width="740" height="126" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_44.png" alt="DataFitting_44.png" width="39" height="21" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Torque Model 
+</p>
+
+
+
+<p class="Subsubsection">
+ Fitting Torque
+</p>
+
+
+
+<p class="Text">
+ As above we assume the forces on the quad rotor are a function of only the body linear and angular velocity, as well as the motor speeds. 
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_45.gif" alt="DataFitting_45.gif" width="201" height="110" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ As&nbsp;&nbsp;<span><span><img src="HTMLFiles/DataFitting_46.png" alt="DataFitting_46.png" width="18" height="24" style="vertical-align:middle" /></span></span> is modeled as a quadratic we must apply the transform <span><span><img src="HTMLFiles/DataFitting_47.png" alt="DataFitting_47.png" width="134" height="72" style="vertical-align:middle" /></span></span>. Constructing the set of sample points. 
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_48.gif" alt="DataFitting_48.gif" width="639" height="223" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Finally we can now compute the matrix <span class="doublestruck">D</span>, <span class="doublestruck">E</span>
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_49.gif" alt="DataFitting_49.gif" width="428" height="100" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Measuring Goodness of Fit 
+</p>
+
+
+
+<p class="Text">
+ We can then evaluate the performance of this model using
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_50.gif" alt="DataFitting_50.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_51.gif" alt="DataFitting_51.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_52.gif" alt="DataFitting_52.gif" width="450" height="322" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Text">
+ Checking the goodness of fit using the coefficient of determination:
+</p>
+
+
+
+<p class='DisplayFormula' style='text-align: center;'>
+ <img src="HTMLFiles/DataFitting_53.gif" alt="DataFitting_53.gif" width="216" height="115" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ We compute the <span><span><img src="HTMLFiles/DataFitting_54.png" alt="DataFitting_54.png" width="18" height="24" style="vertical-align:middle" /></span></span> coefficient then:
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_55.png" alt="DataFitting_55.png" width="381" height="154" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_56.png" alt="DataFitting_56.png" width="78" height="21" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Saving the quadratic least squares matrix:
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_57.gif" alt="DataFitting_57.gif" width="750" height="126" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_58.png" alt="DataFitting_58.png" width="39" height="21" style="vertical-align:middle" />
+</p>
+
+<p class="Chapter">
+ Testing Dataset 1
+</p>
+
+
+
+<p class="Subsection">
+ Importing Data
+</p>
+
+
+
+<p class="Text">
+ Loading in the testing data
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_59.gif" alt="DataFitting_59.gif" width="1088" height="126" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_60.gif" alt="DataFitting_60.gif" width="460" height="362" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Extracting Data
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_61.gif" alt="DataFitting_61.gif" width="881" height="178" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Converting set of quaternions to a set of Rotation matrices
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_62.png" alt="DataFitting_62.png" width="739" height="94" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Testing Fitted Model
+</p>
+
+
+
+<p class="Text">
+ Redefining quadratic transformation and applying on data set
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_63.gif" alt="DataFitting_63.gif" width="639" height="379" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Computing the ground truth
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_64.gif" alt="DataFitting_64.gif" width="427" height="48" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Test data Goodness of Fit
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_65.gif" alt="DataFitting_65.gif" width="450" height="327" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_66.gif" alt="DataFitting_66.gif" width="450" height="328" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_67.gif" alt="DataFitting_67.gif" width="450" height="328" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_68.gif" alt="DataFitting_68.gif" width="450" height="325" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_69.gif" alt="DataFitting_69.gif" width="450" height="325" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_70.gif" alt="DataFitting_70.gif" width="450" height="321" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_71.png" alt="DataFitting_71.png" width="644" height="217" style="vertical-align:middle" />
+</p>
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span>0.972797</span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span>-0.0775922</span></td>
+ </tr>
+</table>
+
+<p class="Chapter">
+ Testing Dataset 2
+</p>
+
+
+
+<p class="Subsection">
+ Importing Data
+</p>
+
+
+
+<p class="Text">
+ Loading in the testing data
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_72.gif" alt="DataFitting_72.gif" width="1088" height="126" style="vertical-align:middle" />
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/DataFitting_73.gif" alt="DataFitting_73.gif" width="450" height="356" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Extracting Data
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_74.gif" alt="DataFitting_74.gif" width="881" height="178" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Converting set of quaternions to a set of Rotation matrices
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_75.png" alt="DataFitting_75.png" width="739" height="94" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Testing Fitted Model
+</p>
+
+
+
+<p class="Text">
+ Redefining quadratic transformation and applying on data set
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_76.gif" alt="DataFitting_76.gif" width="639" height="457" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ Computing the ground truth
+</p>
+
+
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_77.gif" alt="DataFitting_77.gif" width="427" height="48" style="vertical-align:middle" />
+</p>
+
+<p class="Subsection">
+ Test data Goodness of Fit
+</p>
+
+
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_78.gif" alt="DataFitting_78.gif" width="450" height="327" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_79.gif" alt="DataFitting_79.gif" width="450" height="327" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_80.gif" alt="DataFitting_80.gif" width="450" height="332" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_81.gif" alt="DataFitting_81.gif" width="450" height="325" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_82.gif" alt="DataFitting_82.gif" width="450" height="325" style="vertical-align:middle" /></span></td>
+  <td style='text-align: left;'><span><img src="HTMLFiles/DataFitting_83.gif" alt="DataFitting_83.gif" width="450" height="325" style="vertical-align:middle" /></span></td>
+ </tr>
+</table>
+
+<p class="Input">
+ <img src="HTMLFiles/DataFitting_84.png" alt="DataFitting_84.png" width="644" height="217" style="vertical-align:middle" />
+</p>
+
+<table class='Output'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span>0.961393</span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: left;'><span>0.164753</span></td>
+ </tr>
+</table>
+
+
+
+
+<div style="font-family:Helvetica; font-size:11px; width:100%; border:1px none #999999; border-top-style:solid; padding-top:2px; margin-top:20px;">
+ <a href="http://www.wolfram.com/language/" style="color:#000; text-decoration:none;">
+  <span style="color:#555555">Created with the Wolfram Language</span> 
+ </a>
+</div>
+</body>
+
+</html>
